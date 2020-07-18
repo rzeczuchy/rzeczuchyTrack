@@ -12,11 +12,11 @@ namespace rzeczuchyTrack.TimeEntries
         {
             Id = id;
             Label = label;
-            CreatedOn = DateTime.Now;
+            TrackedOn = DateTime.Now;
         }
 
         public int Id { get; }
         public string Label { get; set; }
-        public DateTime CreatedOn { get; }
+        public DateTime TrackedOn { get; }
     }
 }

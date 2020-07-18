@@ -28,7 +28,21 @@ namespace rzeczuchyTrack.Views
 
         public override void Update(ConsoleKey input)
         {
-
+            switch (input)
+            {
+                case ConsoleKey.Home:
+                    break;
+                case ConsoleKey.End:
+                    break;
+                case ConsoleKey.UpArrow:
+                    entryList.MoveCursorUp();
+                    break;
+                case ConsoleKey.DownArrow:
+                    entryList.MoveCursorDown();
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }

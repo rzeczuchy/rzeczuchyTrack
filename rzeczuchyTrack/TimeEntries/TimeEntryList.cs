@@ -28,7 +28,7 @@ namespace rzeczuchyTrack.TimeEntries
             get => cursorPosition;
             set
             {
-                cursorPosition = Utility.Clamp(value, 0, entries.Count);
+                cursorPosition = Utility.Clamp(value, 0, entries.Count - 1);
             }
         }
 
@@ -84,7 +84,7 @@ namespace rzeczuchyTrack.TimeEntries
         private void DrawEntry(int i)
         {
             int yPosition = i - topVisibleEntry;
-            string listEntryData = entries[i].Id + " " + entries[i].Label + " createdOn: " + entries[i].CreatedOn;
+            string listEntryData = entries[i].Id + " " + entries[i].Label + " | Tracked On: " + entries[i].TrackedOn;
             if (i == CursorPosition)
             {
                 DrawString(listEntryData, 0, yPosition, ConsoleColor.Blue, ConsoleColor.White);

@@ -8,7 +8,7 @@ namespace rzeczuchyTrack.Utilities
 {
     static class Utility
     {
-        public static int Clamp(int number, int max, int min)
+        public static int Clamp(int number, int min, int max)
         {
             return (number < min) ? min : (number > max) ? max : number;
         }
