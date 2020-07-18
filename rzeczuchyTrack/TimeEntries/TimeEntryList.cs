@@ -10,18 +10,21 @@ namespace rzeczuchyTrack.TimeEntries
 {
     class TimeEntryList
     {
-        private readonly int maxVisibleEntries;
         private int cursorPosition;
         private int topVisibleEntry;
         private readonly List<TimeEntry> entries;
 
-        public TimeEntryList(DataReaderWriter data)
+        public TimeEntryList(Point position, Point size, DataReaderWriter data)
         {
+            Position = position;
+            Size = size;
             entries = data.GetTimeEntries();
             CursorPosition = 0;
             topVisibleEntry = 0;
-            maxVisibleEntries = Console.BufferHeight - 2;
         }
+
+        public Point Position { get; set; }
+        public Point Size { get; set; }
 
         public int CursorPosition
         {
@@ -29,6 +32,14 @@ namespace rzeczuchyTrack.TimeEntries
             set
             {
                 cursorPosition = Utility.Clamp(value, 0, entries.Count - 1);
+            }
+        }
+
+        public int maxVisibleEntries
+        {
+            get
+            {
+                return (Position.Y + Size.Y > Console.BufferHeight) ? Console.BufferHeight - Position.Y : Size.Y;
             }
         }
 
@@ -83,26 +94,17 @@ namespace rzeczuchyTrack.TimeEntries
 
         private void DrawEntry(int i)
         {
-            int yPosition = i - topVisibleEntry;
-            string listEntryData = entries[i].Id + " " + entries[i].Label + " | Tracked On: " + entries[i].TrackedOn;
+            int entryPosY = i - topVisibleEntry;
+            TimeEntry entry = entries[i];
+            string listEntryData = "#" + entry.Id + " tracked " + entry.Time.ToString("h:mm:ss") + " on: " + entry.Label + " at: " + entry.TrackedOn;
             if (i == CursorPosition)
             {
-                DrawString(listEntryData, 0, yPosition, ConsoleColor.Blue, ConsoleColor.White);
+                Utility.DrawString(listEntryData, Position.X, entryPosY + Position.Y, ConsoleColor.Blue, ConsoleColor.White);
             }
             else
             {
-                DrawString(listEntryData, 0, yPosition, ConsoleColor.Black, ConsoleColor.White);
+                Utility.DrawString(listEntryData, Position.X, entryPosY + Position.Y, ConsoleColor.Black, ConsoleColor.White);
             }
-        }
-
-        private void DrawString(string str, int x, int y, ConsoleColor background, ConsoleColor foreground)
-        {
-            Console.BackgroundColor = background;
-            Console.ForegroundColor = foreground;
-            Console.SetCursorPosition(x, y);
-            Console.WriteLine(str);
-            Console.BackgroundColor = ConsoleColor.Black;
-            Console.ForegroundColor = ConsoleColor.White;
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using rzeczuchyTrack.Data;
 using rzeczuchyTrack.TimeEntries;
+using rzeczuchyTrack.Utilities;
 
 namespace rzeczuchyTrack.Views
 {
@@ -14,7 +15,7 @@ namespace rzeczuchyTrack.Views
 
         public MainView(DataReaderWriter data)
         {
-            entryList = new TimeEntryList(data);
+            entryList = new TimeEntryList(new Point(0, 0), new Point(50, 30), data);
         }
 
         public override void Draw()
