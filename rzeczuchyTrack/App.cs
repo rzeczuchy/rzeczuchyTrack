@@ -92,7 +92,6 @@ namespace rzeczuchyTrack
             }
         }
 
-
         private void DrawTopView()
         {
             Console.Clear();
