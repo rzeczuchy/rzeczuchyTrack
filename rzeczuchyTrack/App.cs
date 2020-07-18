@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using rzeczuchyTrack.Views;
+using rzeczuchyTrack.Data;
 
 namespace rzeczuchyTrack
 {
@@ -11,12 +12,14 @@ namespace rzeczuchyTrack
     {
         private bool isRunning;
         private readonly Stack<View> views;
+        private readonly DataReaderWriter data;
 
         public App()
         {
             Console.Title = "rzeczuchyTrack";
 
             views = new Stack<View>();
+            data = new DataReaderWriter();
 
             isRunning = true;
             Run();
