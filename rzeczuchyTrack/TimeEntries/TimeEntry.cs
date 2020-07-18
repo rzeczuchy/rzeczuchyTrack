@@ -8,9 +8,10 @@ namespace rzeczuchyTrack.TimeEntries
 {
     class TimeEntry
     {
-        public TimeEntry(int id)
+        public TimeEntry(int id, string label)
         {
             Id = id;
+            Label = label;
             CreatedOn = DateTime.Now;
         }
 

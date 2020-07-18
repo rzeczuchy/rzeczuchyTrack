@@ -17,9 +17,15 @@ namespace rzeczuchyTrack
         public App()
         {
             Console.Title = "rzeczuchyTrack";
+            Console.CursorVisible = false;
+            Console.BufferWidth = Console.WindowWidth;
+            Console.BufferHeight = Console.WindowHeight;
+            Console.OutputEncoding = Encoding.Unicode;
 
             views = new Stack<View>();
             data = new DataReaderWriter();
+
+            views.Push(new MainView(data));
 
             isRunning = true;
             Run();
@@ -27,6 +33,7 @@ namespace rzeczuchyTrack
 
         private void Run()
         {
+            DrawTopView();
             while (isRunning)
             {
                 UpdateTopView();

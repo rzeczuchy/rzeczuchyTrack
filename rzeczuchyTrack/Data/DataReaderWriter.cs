@@ -17,7 +17,7 @@ namespace rzeczuchyTrack.Data
 
             for (int i = 0; i < 10; i++)
             {
-                entries.Add(new TimeEntry(entries.Count));
+                entries.Add(new TimeEntry(entries.Count, "example entry"));
             }
         }
 
