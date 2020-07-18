@@ -13,13 +13,12 @@ namespace rzeczuchyTrack.Data
 
         public DataReaderWriter()
         {
-            entries = new List<TimeEntry>
+            entries = new List<TimeEntry>();
+
+            for (int i = 0; i < 10; i++)
             {
-                new TimeEntry(entries.Count),
-                new TimeEntry(entries.Count),
-                new TimeEntry(entries.Count),
-                new TimeEntry(entries.Count),
-            };
+                entries.Add(new TimeEntry(entries.Count));
+            }
         }
 
         public List<TimeEntry> GetTimeEntries()
