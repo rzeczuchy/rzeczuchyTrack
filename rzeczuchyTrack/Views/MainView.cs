@@ -21,6 +21,13 @@ namespace rzeczuchyTrack.Views
         public override void Draw()
         {
             entryList.Draw();
+            DrawShortcuts();
+        }
+
+        private void DrawShortcuts()
+        {
+            string shortcuts = "[Home] [End]";
+            Utility.DrawString(shortcuts, new Point(0, Console.BufferHeight - 2), ConsoleColor.Black, ConsoleColor.White);
         }
 
         public override void OnClose() { }
@@ -32,8 +39,10 @@ namespace rzeczuchyTrack.Views
             switch (input)
             {
                 case ConsoleKey.Home:
+                    entryList.ScrollToTop();
                     break;
                 case ConsoleKey.End:
+                    entryList.ScrollToBottom();
                     break;
                 case ConsoleKey.UpArrow:
                     entryList.MoveCursorUp();

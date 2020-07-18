@@ -39,7 +39,7 @@ namespace rzeczuchyTrack.TimeEntries
         {
             get
             {
-                return (Position.Y + Size.Y > Console.BufferHeight) ? Console.BufferHeight - Position.Y : Size.Y;
+                return (Position.Y + Size.Y > Console.BufferHeight - 1) ? Console.BufferHeight - Position.Y - 2 : Size.Y - 2;
             }
         }
 
@@ -99,11 +99,11 @@ namespace rzeczuchyTrack.TimeEntries
             string listEntryData = "#" + entry.Id + " tracked " + entry.Time.ToString("h:mm:ss") + " on: " + entry.Label + " at: " + entry.TrackedOn;
             if (i == CursorPosition)
             {
-                Utility.DrawString(listEntryData, Position.X, entryPosY + Position.Y, ConsoleColor.Blue, ConsoleColor.White);
+                Utility.DrawString(listEntryData, new Point(Position.X, entryPosY + Position.Y), ConsoleColor.Blue, ConsoleColor.White);
             }
             else
             {
-                Utility.DrawString(listEntryData, Position.X, entryPosY + Position.Y, ConsoleColor.Black, ConsoleColor.White);
+                Utility.DrawString(listEntryData, new Point(Position.X, entryPosY + Position.Y), ConsoleColor.Black, ConsoleColor.White);
             }
         }
     }
