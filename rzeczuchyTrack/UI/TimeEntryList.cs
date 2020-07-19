@@ -53,12 +53,20 @@ namespace rzeczuchyTrack.UI
             entries.Add(new TimeEntry(entries.Max(i => i.Id) + 1, label, time));
         }
 
+        public void DeleteEntry(TimeEntry entry)
+        {
+            entries.Remove(entry);
+        }
+
         public override void UpdateInput(ConsoleKeyInfo input)
         {
             switch (input.Key)
             {
                 case ConsoleKey.Insert:
                     ui.OpenTimer(this);
+                    break;
+                case ConsoleKey.Delete:
+                    //delete time entry
                     break;
                 case ConsoleKey.Home:
                     ScrollToTop();
@@ -140,6 +148,11 @@ namespace rzeczuchyTrack.UI
             {
                 Utility.DrawString(listEntryData, new Point(Position.X + 1, entryPosY + Position.Y + 1), window.BackgroundColor, window.ForegroundColor);
             }
+        }
+
+        private TimeEntry GetHovered()
+        {
+            return entries[entries.Count - 1 - CursorPosition];
         }
     }
 }
