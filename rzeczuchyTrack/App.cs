@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -36,17 +37,21 @@ namespace rzeczuchyTrack
             DrawTopView();
             while (isRunning)
             {
+                Thread.Sleep(16);
                 UpdateTopView();
-                DrawTopView();
             }
         }
 
         private void UpdateTopView()
         {
-            ConsoleKey input = Console.ReadKey(true).Key;
-            if (input == ConsoleKey.Escape)
+            if(Console.KeyAvailable)
             {
-                Exit();
+                ConsoleKey input = Console.ReadKey(true).Key;
+                if (views.Any())
+                {
+                    GetTopView().UpdateInput(input);
+                    DrawTopView();
+                }
             }
 
             if (views.Any())
@@ -57,14 +62,13 @@ namespace rzeczuchyTrack
                 }
                 else
                 {
-                    GetTopView().Update(input);
+                    GetTopView().Update();
                 }
             }
             else
             {
                 Exit();
             }
-
         }
 
         private View GetTopView()

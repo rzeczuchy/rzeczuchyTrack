@@ -4,22 +4,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace rzeczuchyTrack.Views
+namespace rzeczuchyTrack.UI
 {
-    class View
+    class UIState
     {
-        public View() { }
-
         public bool End { get; set; }
+
+        public void Close()
+        {
+            End = true;
+        }
 
         public virtual void Draw() { }
 
         public virtual void OnClose() { }
 
         public virtual void OnOpen() { }
-
+        
         public virtual void Update() { }
 
-        public virtual void UpdateInput(ConsoleKey input) { }
+        public virtual void Update(ConsoleKey input) { }
     }
 }

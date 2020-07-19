@@ -6,21 +6,24 @@ using System.Threading.Tasks;
 using rzeczuchyTrack.Data;
 using rzeczuchyTrack.TimeEntries;
 using rzeczuchyTrack.Utilities;
+using rzeczuchyTrack.UI;
 
 namespace rzeczuchyTrack.Views
 {
     class MainView : View
     {
-        private readonly TimeEntryList entryList;
+        private readonly UIStateHandler ui;
 
         public MainView(DataReaderWriter data)
         {
-            entryList = new TimeEntryList(new Point(0, 0), new Point(50, 30), data);
+            ui = new UIStateHandler();
+            ui.AddState(new TimeEntryList(new Point(0, 0), new Point(50, 30), data));
+            ui.AddState(new Window(new Point(10, 10), new Point(10, 10)));
         }
 
         public override void Draw()
         {
-            entryList.Draw();
+            ui.Draw();
             DrawShortcuts();
         }
 
@@ -34,25 +37,14 @@ namespace rzeczuchyTrack.Views
 
         public override void OnOpen() { }
 
-        public override void Update(ConsoleKey input)
+        public override void Update()
         {
-            switch (input)
-            {
-                case ConsoleKey.Home:
-                    entryList.ScrollToTop();
-                    break;
-                case ConsoleKey.End:
-                    entryList.ScrollToBottom();
-                    break;
-                case ConsoleKey.UpArrow:
-                    entryList.MoveCursorUp();
-                    break;
-                case ConsoleKey.DownArrow:
-                    entryList.MoveCursorDown();
-                    break;
-                default:
-                    break;
-            }
+            ui.Update();
+        }
+
+        public override void UpdateInput(ConsoleKey input)
+        {
+            ui.UpdateInput(input);
         }
     }
 }

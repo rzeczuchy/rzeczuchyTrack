@@ -5,10 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using rzeczuchyTrack.Data;
 using rzeczuchyTrack.Utilities;
+using rzeczuchyTrack.TimeEntries;
 
-namespace rzeczuchyTrack.TimeEntries
+namespace rzeczuchyTrack.UI
 {
-    class TimeEntryList
+    class TimeEntryList : UIState
     {
         private int cursorPosition;
         private int topVisibleEntry;
@@ -43,7 +44,28 @@ namespace rzeczuchyTrack.TimeEntries
             }
         }
 
-        public void Draw()
+        public override void Update(ConsoleKey input)
+        {
+            switch (input)
+            {
+                case ConsoleKey.Home:
+                    ScrollToTop();
+                    break;
+                case ConsoleKey.End:
+                    ScrollToBottom();
+                    break;
+                case ConsoleKey.UpArrow:
+                    MoveCursorUp();
+                    break;
+                case ConsoleKey.DownArrow:
+                    MoveCursorDown();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public override void Draw()
         {
             int displayed = (topVisibleEntry + maxVisibleEntries < entries.Count()) ? topVisibleEntry + maxVisibleEntries : entries.Count();
             for (int i = topVisibleEntry; i < displayed; i++)

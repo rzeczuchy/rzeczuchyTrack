@@ -20,8 +20,7 @@ namespace rzeczuchyTrack.Utilities
             Console.ForegroundColor = foreground;
             Console.SetCursorPosition(position.X, position.Y);
             Console.WriteLine(str);
-            Console.BackgroundColor = ConsoleColor.Black;
-            Console.ForegroundColor = ConsoleColor.White;
+            Console.ResetColor();
         }
 
         public static bool IsWithinBuffer(Point position)
