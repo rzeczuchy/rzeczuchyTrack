@@ -55,7 +55,11 @@ namespace rzeczuchyTrack.UI
                 default:
                     if (EnteredLabel.Length < MaxLength)
                     {
-                        EnteredLabel += input.KeyChar;
+                        char c = input.KeyChar;
+                        if (char.IsLetter(c) || char.IsNumber(c) || char.IsSymbol(c) || char.IsPunctuation(c) || c == ' ')
+                        {
+                            EnteredLabel += c;
+                        }
                     }
                     break;
             }
@@ -80,14 +84,6 @@ namespace rzeczuchyTrack.UI
             if (EnteredLabel.Length > 0)
             {
                 EnteredLabel = EnteredLabel.Remove(EnteredLabel.Length - 1);
-            }
-        }
-
-        public void Space()
-        {
-            if (EnteredLabel.Length < MaxLength)
-            {
-                EnteredLabel += " ";
             }
         }
 
