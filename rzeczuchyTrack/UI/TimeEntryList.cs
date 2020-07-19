@@ -46,9 +46,9 @@ namespace rzeczuchyTrack.UI
             }
         }
 
-        public override void UpdateInput(ConsoleKey input)
+        public override void UpdateInput(ConsoleKeyInfo input)
         {
-            switch (input)
+            switch (input.Key)
             {
                 case ConsoleKey.Home:
                     ScrollToTop();

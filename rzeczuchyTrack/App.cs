@@ -46,7 +46,7 @@ namespace rzeczuchyTrack
         {
             if(Console.KeyAvailable)
             {
-                ConsoleKey input = Console.ReadKey(true).Key;
+                ConsoleKeyInfo input = Console.ReadKey(true);
                 if (views.Any())
                 {
                     GetTopView().UpdateInput(input);

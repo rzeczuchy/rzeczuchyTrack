@@ -23,6 +23,6 @@ namespace rzeczuchyTrack.UI
         
         public virtual void Update() { }
 
-        public virtual void UpdateInput(ConsoleKey input) { }
+        public virtual void UpdateInput(ConsoleKeyInfo input) { }
     }
 }

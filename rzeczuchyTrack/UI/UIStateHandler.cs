@@ -34,7 +34,7 @@ namespace rzeczuchyTrack.UI
             }
         }
 
-        public void UpdateInput(ConsoleKey input)
+        public void UpdateInput(ConsoleKeyInfo input)
         {
             for (int i = 0; i < states.Count; i++)
             {

@@ -45,9 +45,23 @@ namespace rzeczuchyTrack.Views
             ui.Update();
         }
 
-        public override void UpdateInput(ConsoleKey input)
+        public override void UpdateInput(ConsoleKeyInfo input)
         {
-            ui.UpdateInput(input);
+            if (input.Key == ConsoleKey.Insert)
+            {
+                OpenTimer();
+            }
+            else
+            {
+                ui.UpdateInput(input);
+            }
+        }
+
+        private void OpenTimer()
+        {
+            var timer = new TimerWindow(new Point(5, 10), new Point(70, 5));
+            ui.AddState(timer);
+            ui.Focused = timer;
         }
     }
 }
