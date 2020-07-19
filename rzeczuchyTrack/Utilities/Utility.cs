@@ -16,11 +16,13 @@ namespace rzeczuchyTrack.Utilities
         public static void DrawString(string str, Point position, ConsoleColor background, ConsoleColor foreground)
         {
             if (IsWithinBuffer(position))
-            Console.BackgroundColor = background;
-            Console.ForegroundColor = foreground;
-            Console.SetCursorPosition(position.X, position.Y);
-            Console.WriteLine(str);
-            Console.ResetColor();
+            {
+                Console.BackgroundColor = background;
+                Console.ForegroundColor = foreground;
+                Console.SetCursorPosition(position.X, position.Y);
+                Console.WriteLine(str);
+                Console.ResetColor();
+            }
         }
 
         public static bool IsWithinBuffer(Point position)

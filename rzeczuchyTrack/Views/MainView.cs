@@ -17,7 +17,7 @@ namespace rzeczuchyTrack.Views
         public MainView(DataReaderWriter data)
         {
             ui = new UIStateHandler();
-            ui.AddState(new TimeEntryList(new Point(0, 0), new Point(50, 30), data));
+            ui.AddState(new TimeEntryList(new Point(1, 1), new Point(Console.BufferWidth - 2, 20), data));
             ui.AddState(new Window(new Point(10, 10), new Point(10, 10)));
         }
 

@@ -39,19 +39,19 @@ namespace rzeczuchyTrack.UI
             string top = "╔";
             string mid = "║";
             string bottom = "╚";
-            for (int i = 0; i < Size.X; i++)
+            for (int i = 1; i < Size.X - 1; i++)
             {
                 top += "═";
             }
             top += "╗";
 
-            for (int i = 0; i < Size.X; i++)
+            for (int i = 1; i < Size.X - 1; i++)
             {
                 mid += " ";
             }
             mid += "║";
 
-            for (int i = 0; i < Size.X; i++)
+            for (int i = 1; i < Size.X - 1; i++)
             {
                 bottom += "═";
             }

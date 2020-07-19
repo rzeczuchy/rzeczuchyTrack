@@ -14,6 +14,7 @@ namespace rzeczuchyTrack.UI
         private int cursorPosition;
         private int topVisibleEntry;
         private readonly List<TimeEntry> entries;
+        private readonly Window window;
 
         public TimeEntryList(Point position, Point size, DataReaderWriter data)
         {
@@ -22,6 +23,7 @@ namespace rzeczuchyTrack.UI
             entries = data.GetTimeEntries();
             CursorPosition = 0;
             topVisibleEntry = 0;
+            window = new Window(position, size);
         }
 
         public Point Position { get; set; }
@@ -40,7 +42,7 @@ namespace rzeczuchyTrack.UI
         {
             get
             {
-                return (Position.Y + Size.Y > Console.BufferHeight - 1) ? Console.BufferHeight - Position.Y - 2 : Size.Y - 2;
+                return (Position.Y + Size.Y > Console.BufferHeight - 1) ? Console.BufferHeight - Position.Y - 1 : Size.Y - 1;
             }
         }
 
@@ -67,6 +69,7 @@ namespace rzeczuchyTrack.UI
 
         public override void Draw()
         {
+            window.Draw();
             int displayed = (topVisibleEntry + maxVisibleEntries < entries.Count()) ? topVisibleEntry + maxVisibleEntries : entries.Count();
             for (int i = topVisibleEntry; i < displayed; i++)
             {
@@ -121,11 +124,11 @@ namespace rzeczuchyTrack.UI
             string listEntryData = "#" + entry.Id + " tracked " + entry.Time.ToString("h:mm:ss") + " on: " + entry.Label + " at: " + entry.TrackedOn;
             if (i == CursorPosition)
             {
-                Utility.DrawString(listEntryData, new Point(Position.X, entryPosY + Position.Y), ConsoleColor.Blue, ConsoleColor.White);
+                Utility.DrawString(listEntryData, new Point(Position.X + 1, entryPosY + Position.Y + 1), ConsoleColor.Blue, ConsoleColor.White);
             }
             else
             {
-                Utility.DrawString(listEntryData, new Point(Position.X, entryPosY + Position.Y), ConsoleColor.Black, ConsoleColor.White);
+                Utility.DrawString(listEntryData, new Point(Position.X + 1, entryPosY + Position.Y + 1), window.BackgroundColor, window.ForegroundColor);
             }
         }
     }
