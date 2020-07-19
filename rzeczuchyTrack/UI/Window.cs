@@ -22,17 +22,7 @@ namespace rzeczuchyTrack.UI
         public ConsoleColor BackgroundColor { get; set; }
         public ConsoleColor ForegroundColor { get; set; }
 
-        public override void UpdateInput(ConsoleKeyInfo input)
-        {
-            switch (input.Key)
-            {
-                case ConsoleKey.Escape:
-                    Close();
-                    break;
-                default:
-                    break;
-            }
-        }
+        public override void UpdateInput(ConsoleKeyInfo input) { }
 
         public override void Draw()
         {

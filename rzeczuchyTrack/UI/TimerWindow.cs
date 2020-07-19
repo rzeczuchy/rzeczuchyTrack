@@ -11,11 +11,15 @@ namespace rzeczuchyTrack.UI
 {
     class TimerWindow : UIState
     {
-        private readonly Window window;
         private const int MaxLength = 40;
+        private readonly UIStateHandler ui;
+        private readonly TimeEntryList timeEntryList;
+        private readonly Window window;
 
-        public TimerWindow(Point position, Point size)
+        public TimerWindow(Point position, Point size, UIStateHandler ui, TimeEntryList timeEntryList)
         {
+            this.ui = ui;
+            this.timeEntryList = timeEntryList;
             Position = position;
             Size = size;
             window = new Window(position, size);
@@ -51,6 +55,9 @@ namespace rzeczuchyTrack.UI
                     break;
                 case ConsoleKey.Backspace:
                     Backspace();
+                    break;
+                case ConsoleKey.Insert:
+                    AddTimeEntry();
                     break;
                 default:
                     if (EnteredLabel.Length < MaxLength)
@@ -94,7 +101,7 @@ namespace rzeczuchyTrack.UI
             Utility.DrawString(EnteredLabel, new Point(Position.X + 12, Position.Y + 1), ConsoleColor.Black, window.ForegroundColor);
             Utility.DrawString("_", new Point(Position.X + 12 + EnteredLabel.Length, Position.Y + 1), ConsoleColor.Black, window.ForegroundColor);
             DrawTimer();
-            Utility.DrawString("[Enter]-Start/Stop timer", new Point (Position.X + 1, Position.Y + Size.Y - 2), window.BackgroundColor, window.ForegroundColor);
+            Utility.DrawString("[Enter]-Start/Stop timer [Ins]-Save entry", new Point (Position.X + 1, Position.Y + Size.Y - 2), window.BackgroundColor, window.ForegroundColor);
         }
 
         private void DrawTimer()
@@ -102,6 +109,15 @@ namespace rzeczuchyTrack.UI
             string timerDisplay = string.Format("{0:00}:{1:00}:{2:00}",
             Timer.Elapsed.Hours, Timer.Elapsed.Minutes, Timer.Elapsed.Seconds);
             Utility.DrawString(timerDisplay, new Point(Position.X + Size.X - 10, Position.Y + 1), window.BackgroundColor, window.ForegroundColor);
+        }
+
+        private void AddTimeEntry()
+        {
+            if (!Timer.IsRunning && Timer.Elapsed.Seconds > 1)
+            {
+                timeEntryList.AddEntry(EnteredLabel, new DateTime(1, 1, 1, Timer.Elapsed.Hours, Timer.Elapsed.Minutes, Timer.Elapsed.Seconds));
+                ui.CloseState(this);
+            }
         }
     }
 }

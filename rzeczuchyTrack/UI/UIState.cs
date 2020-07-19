@@ -8,13 +8,6 @@ namespace rzeczuchyTrack.UI
 {
     class UIState
     {
-        public bool End { get; set; }
-
-        public void Close()
-        {
-            End = true;
-        }
-
         public virtual void Draw() { }
 
         public virtual void OnClose() { }

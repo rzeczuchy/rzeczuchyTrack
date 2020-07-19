@@ -8,11 +8,11 @@ namespace rzeczuchyTrack.TimeEntries
 {
     class TimeEntry
     {
-        public TimeEntry(int id, string label)
+        public TimeEntry(int id, string label, DateTime time)
         {
             Id = id;
             Label = label;
-            Time = new DateTime(1, 1, 1, 1, 30, 5);
+            Time = time;
             TrackedOn = DateTime.Now;
         }
 

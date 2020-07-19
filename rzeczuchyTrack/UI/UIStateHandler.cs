@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using rzeczuchyTrack.Utilities;
 
 namespace rzeczuchyTrack.UI
 {
@@ -16,6 +17,13 @@ namespace rzeczuchyTrack.UI
         }
 
         public UIState Focused { get; set; }
+        
+        public void OpenTimer(TimeEntryList timeEntryList)
+        {
+            var timer = new TimerWindow(new Point(5, 10), new Point(70, 5), this, timeEntryList);
+            AddState(timer);
+            Focused = timer;
+        }
 
         public void AddState(UIState item)
         {
@@ -26,10 +34,6 @@ namespace rzeczuchyTrack.UI
         {
             for (int i = 0; i < states.Count; i++)
             {
-                if (states[i].End)
-                {
-                    CloseState(states[i]);
-                }
                 states[i].Update();
             }
         }
@@ -53,10 +57,14 @@ namespace rzeczuchyTrack.UI
             }
         }
 
-        private void CloseState(UIState state)
+        public void CloseState(UIState state)
         {
             state.OnClose();
             states.Remove(state);
+            if (state == Focused && states.Any())
+            {
+                Focused = states[0];
+            }
         }
     }
 }

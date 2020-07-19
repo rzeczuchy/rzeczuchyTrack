@@ -19,7 +19,7 @@ namespace rzeczuchyTrack.Views
         {
             ui = new UIStateHandler();
             
-            entryList = new TimeEntryList(new Point(1, 1), new Point(Console.BufferWidth - 2, 21), data);
+            entryList = new TimeEntryList(new Point(1, 1), new Point(Console.BufferWidth - 2, 21), ui, data);
             ui.AddState(entryList);
             ui.Focused = entryList;
         }
@@ -47,21 +47,7 @@ namespace rzeczuchyTrack.Views
 
         public override void UpdateInput(ConsoleKeyInfo input)
         {
-            if (input.Key == ConsoleKey.Insert)
-            {
-                OpenTimer();
-            }
-            else
-            {
-                ui.UpdateInput(input);
-            }
-        }
-
-        private void OpenTimer()
-        {
-            var timer = new TimerWindow(new Point(5, 10), new Point(70, 5));
-            ui.AddState(timer);
-            ui.Focused = timer;
+            ui.UpdateInput(input);
         }
     }
 }

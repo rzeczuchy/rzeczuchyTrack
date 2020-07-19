@@ -11,13 +11,15 @@ namespace rzeczuchyTrack.UI
 {
     class TimeEntryList : UIState
     {
-        private int cursorPosition;
-        private int topVisibleEntry;
+        private readonly UIStateHandler ui;
         private readonly List<TimeEntry> entries;
         private readonly Window window;
+        private int cursorPosition;
+        private int topVisibleEntry;
 
-        public TimeEntryList(Point position, Point size, DataReaderWriter data)
+        public TimeEntryList(Point position, Point size, UIStateHandler ui, DataReaderWriter data)
         {
+            this.ui = ui;
             Position = position;
             Size = size;
             entries = data.GetTimeEntries();
@@ -46,10 +48,18 @@ namespace rzeczuchyTrack.UI
             }
         }
 
+        public void AddEntry(string label, DateTime time)
+        {
+            entries.Add(new TimeEntry(entries.Max(i => i.Id) + 1, label, time));
+        }
+
         public override void UpdateInput(ConsoleKeyInfo input)
         {
             switch (input.Key)
             {
+                case ConsoleKey.Insert:
+                    ui.OpenTimer(this);
+                    break;
                 case ConsoleKey.Home:
                     ScrollToTop();
                     break;
