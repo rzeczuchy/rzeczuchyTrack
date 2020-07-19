@@ -120,7 +120,7 @@ namespace rzeczuchyTrack.UI
         private void DrawEntry(int i)
         {
             int entryPosY = i - topVisibleEntry;
-            TimeEntry entry = entries[i];
+            TimeEntry entry = entries[entries.Count - 1 - i];
             string listEntryData = "#" + entry.Id + " tracked " + entry.Time.ToString("h:mm:ss") + " on: " + entry.Label + " at: " + entry.TrackedOn;
             if (i == CursorPosition)
             {

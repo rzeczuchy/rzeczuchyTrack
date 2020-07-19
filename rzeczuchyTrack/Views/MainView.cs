@@ -13,16 +13,13 @@ namespace rzeczuchyTrack.Views
     class MainView : View
     {
         private readonly UIStateHandler ui;
-        private readonly TimerWindow timer;
         private readonly TimeEntryList entryList;
 
         public MainView(DataReaderWriter data)
         {
             ui = new UIStateHandler();
-
-            timer = new TimerWindow(new Point(1, 1), new Point(Console.BufferWidth - 2, 3));
-            ui.AddState(timer);
-            entryList = new TimeEntryList(new Point(1, 5), new Point(Console.BufferWidth - 2, 17), data);
+            
+            entryList = new TimeEntryList(new Point(1, 1), new Point(Console.BufferWidth - 2, 21), data);
             ui.AddState(entryList);
             ui.Focused = entryList;
         }

@@ -24,6 +24,12 @@ namespace rzeczuchyTrack.UI
         public Point Size { get; set; }
         public DateTime Timer { get; set; }
 
+        public override void OnOpen()
+        {
+            Console.SetCursorPosition(Position.X + 10, Position.Y + 1);
+            Console.ReadLine();
+        }
+
         public override void Draw()
         {
             window.Draw();
