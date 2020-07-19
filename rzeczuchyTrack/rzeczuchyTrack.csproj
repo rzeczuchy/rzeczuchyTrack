@@ -48,6 +48,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TimeEntries\TimeEntry.cs" />
+    <Compile Include="UI\TimerWindow.cs" />
     <Compile Include="UI\TimeEntryList.cs" />
     <Compile Include="UI\UIState.cs" />
     <Compile Include="UI\UIStateHandler.cs" />

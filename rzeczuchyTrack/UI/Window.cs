@@ -22,7 +22,7 @@ namespace rzeczuchyTrack.UI
         public ConsoleColor BackgroundColor { get; set; }
         public ConsoleColor ForegroundColor { get; set; }
 
-        public override void Update(ConsoleKey input)
+        public override void UpdateInput(ConsoleKey input)
         {
             switch (input)
             {
@@ -59,12 +59,12 @@ namespace rzeczuchyTrack.UI
 
             Utility.DrawString(top, Position, BackgroundColor, ForegroundColor);
 
-            for (int y = 1; y < Size.Y; y++)
+            for (int y = 1; y < Size.Y - 1; y++)
             {
                 Utility.DrawString(mid, new Point(Position.X, Position.Y + y), BackgroundColor, ForegroundColor);
             }
 
-            Utility.DrawString(bottom, new Point(Position.X, Position.Y + Size.Y), BackgroundColor, ForegroundColor);
+            Utility.DrawString(bottom, new Point(Position.X, Position.Y + Size.Y - 1), BackgroundColor, ForegroundColor);
         }
     }
 }

@@ -8,69 +8,55 @@ namespace rzeczuchyTrack.UI
 {
     class UIStateHandler
     {
-        private readonly Stack<UIState> states;
+        private readonly List<UIState> states;
 
         public UIStateHandler()
         {
-            states = new Stack<UIState>();
+            states = new List<UIState>();
         }
+
+        public UIState Focused { get; set; }
 
         public void AddState(UIState item)
         {
-            states.Push(item);
+            states.Add(item);
         }
 
         public void Update()
         {
-            if (states.Any())
+            for (int i = 0; i < states.Count; i++)
             {
-                if (GetTopState().End)
+                if (states[i].End)
                 {
-                    CloseTopState();
+                    CloseState(states[i]);
                 }
-                else
-                {
-                    GetTopState().Update();
-                }
+                states[i].Update();
             }
         }
 
         public void UpdateInput(ConsoleKey input)
         {
-            if (states.Any())
+            for (int i = 0; i < states.Count; i++)
             {
-                GetTopState().Update(input);
+                if (states[i] == Focused)
+                {
+                    states[i].UpdateInput(input);
+                }
             }
         }
 
         public void Draw()
         {
-            List<UIState> toDraw = states.Where(i => !i.End).ToList();
-            toDraw.Reverse();
-            for (int i = 0; i < toDraw.Count; i++)
+            for (int i = 0; i < states.Count; i++)
             {
-                toDraw[i].Draw();
+                states[i].Draw();
             }
         }
 
-        public UIState GetTopState()
+        private void CloseState(UIState state)
         {
-            if (states.Any())
-            {
-                return states.Peek();
-            }
-            else return null;
-        }
-
-        private void CloseTopState()
-        {
-            GetTopState().OnClose();
-            states.Pop();
-
-            if (states.Any())
-            {
-                GetTopState().OnOpen();
-            }
+            state.OnClose();
+            states.Remove(state);
         }
     }
 }

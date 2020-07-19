@@ -42,11 +42,11 @@ namespace rzeczuchyTrack.UI
         {
             get
             {
-                return (Position.Y + Size.Y > Console.BufferHeight - 1) ? Console.BufferHeight - Position.Y - 1 : Size.Y - 1;
+                return (Position.Y + Size.Y > Console.BufferHeight - 1) ? Console.BufferHeight - Position.Y - 2 : Size.Y - 2;
             }
         }
 
-        public override void Update(ConsoleKey input)
+        public override void UpdateInput(ConsoleKey input)
         {
             switch (input)
             {

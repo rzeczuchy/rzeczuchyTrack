@@ -13,12 +13,18 @@ namespace rzeczuchyTrack.Views
     class MainView : View
     {
         private readonly UIStateHandler ui;
+        private readonly TimerWindow timer;
+        private readonly TimeEntryList entryList;
 
         public MainView(DataReaderWriter data)
         {
             ui = new UIStateHandler();
-            ui.AddState(new TimeEntryList(new Point(1, 1), new Point(Console.BufferWidth - 2, 20), data));
-            ui.AddState(new Window(new Point(10, 10), new Point(10, 10)));
+
+            timer = new TimerWindow(new Point(1, 1), new Point(Console.BufferWidth - 2, 3));
+            ui.AddState(timer);
+            entryList = new TimeEntryList(new Point(1, 5), new Point(Console.BufferWidth - 2, 17), data);
+            ui.AddState(entryList);
+            ui.Focused = entryList;
         }
 
         public override void Draw()
@@ -29,8 +35,8 @@ namespace rzeczuchyTrack.Views
 
         private void DrawShortcuts()
         {
-            string shortcuts = "[Home] [End]";
-            Utility.DrawString(shortcuts, new Point(0, Console.BufferHeight - 2), ConsoleColor.Black, ConsoleColor.White);
+            string shortcuts = "[Ins]-New [Del]-Delete [Enter]-Edit [Up]/[Down]-Scroll [Home]/[End]-Top/Bottom";
+            Utility.DrawString(shortcuts, new Point(1, Console.BufferHeight - 2), ConsoleColor.Black, ConsoleColor.White);
         }
 
         public override void OnClose() { }
