@@ -6,17 +6,9 @@ using System.Threading.Tasks;
 
 namespace rzeczuchyTrack.TimeEntries
 {
-    class TimeEntry
+    public class TimeEntry
     {
-        public TimeEntry(int id, string label, DateTime time)
-        {
-            Id = id;
-            Label = label;
-            Time = time;
-            TrackedOn = DateTime.Now;
-        }
-
-        public int Id { get; }
+        public int Id { get; set; }
         public string Label { get; set; }
         public DateTime Time { get; set; }
         public DateTime TrackedOn { get; }

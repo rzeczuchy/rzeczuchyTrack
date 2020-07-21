@@ -17,13 +17,24 @@ namespace rzeczuchyTrack.Data
 
             for (int i = 0; i < 100; i++)
             {
-                entries.Add(new TimeEntry(entries.Count, "example entry", new DateTime(1, 1, 1, 1, 1, 1)));
-            }
+                AddEntry("example entry", new DateTime(1, 1, 1, 0, 0, 1));
+            };
         }
 
         public List<TimeEntry> GetTimeEntries()
         {
             return entries;
+        }
+
+        public void AddEntry(string label, DateTime time)
+        {
+            int id = entries.Any() ? entries.Max(e => e.Id) + 1 : 0;
+            entries.Add(new TimeEntry()
+            {
+                Id = id,
+                Label = label,
+                Time = time,
+            });
         }
     }
 }

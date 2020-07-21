@@ -50,7 +50,11 @@ namespace rzeczuchyTrack.UI
 
         public void AddEntry(string label, DateTime time)
         {
-            entries.Add(new TimeEntry(entries.Max(i => i.Id) + 1, label, time));
+            entries.Add(new TimeEntry() {
+                Id = entries.Max(i => i.Id) + 1,
+                Label = label,
+                Time = time,
+            });
         }
 
         public void DeleteEntry(TimeEntry entry)
