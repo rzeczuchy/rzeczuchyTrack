@@ -13,7 +13,6 @@ namespace rzeczuchyTrack
     {
         private bool isRunning;
         private readonly Stack<View> views;
-        private readonly DataReaderWriter data;
 
         public App()
         {
@@ -24,9 +23,8 @@ namespace rzeczuchyTrack
             Console.OutputEncoding = Encoding.Unicode;
 
             views = new Stack<View>();
-            data = new DataReaderWriter();
 
-            views.Push(new MainView(data));
+            views.Push(new MainView());
 
             isRunning = true;
             Run();

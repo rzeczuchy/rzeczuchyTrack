@@ -15,11 +15,11 @@ namespace rzeczuchyTrack.Views
         private readonly UIStateHandler ui;
         private readonly TimeEntryList entryList;
 
-        public MainView(DataReaderWriter data)
+        public MainView()
         {
             ui = new UIStateHandler();
             
-            entryList = new TimeEntryList(new Point(1, 1), new Point(Console.BufferWidth - 2, 21), ui, data);
+            entryList = new TimeEntryList(new Point(1, 1), new Point(Console.BufferWidth - 2, 21), ui);
             ui.AddState(entryList);
             ui.Focused = entryList;
         }

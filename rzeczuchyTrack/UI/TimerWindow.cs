@@ -115,7 +115,7 @@ namespace rzeczuchyTrack.UI
         {
             if (!Timer.IsRunning && Timer.Elapsed.Seconds > 1)
             {
-                timeEntryList.AddEntry(EnteredLabel, new DateTime(1, 1, 1, Timer.Elapsed.Hours, Timer.Elapsed.Minutes, Timer.Elapsed.Seconds));
+                timeEntryList.AddEntry(EnteredLabel, Timer.Elapsed.Hours, Timer.Elapsed.Minutes, Timer.Elapsed.Seconds);
                 ui.CloseState(this);
             }
         }

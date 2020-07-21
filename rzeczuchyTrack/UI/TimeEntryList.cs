@@ -17,12 +17,12 @@ namespace rzeczuchyTrack.UI
         private int cursorPosition;
         private int topVisibleEntry;
 
-        public TimeEntryList(Point position, Point size, UIStateHandler ui, DataReaderWriter data)
+        public TimeEntryList(Point position, Point size, UIStateHandler ui)
         {
             this.ui = ui;
             Position = position;
             Size = size;
-            entries = data.GetTimeEntries();
+            entries = ReadEntriesFromDb();
             CursorPosition = 0;
             topVisibleEntry = 0;
             window = new Window(position, size);
@@ -48,18 +48,35 @@ namespace rzeczuchyTrack.UI
             }
         }
 
-        public void AddEntry(string label, DateTime time)
+        public void AddEntry(string label, int hours, int minutes, int seconds)
         {
-            entries.Add(new TimeEntry() {
-                Id = entries.Max(i => i.Id) + 1,
+            int id = entries.Any() ? entries.Max(e => e.Id) + 1 : 0;
+            var entry = new TimeEntry()
+            {
+                Id = id,
                 Label = label,
-                Time = time,
-            });
+                Hours = hours,
+                Minutes = minutes,
+                Seconds = seconds,
+                TrackedOn = DateTime.Now,
+            };
+            entries.Add(entry);
+
+            using (var ctx = new EntriesDbContext())
+            {
+                ctx.TimeEntries.Add(entry);
+                ctx.SaveChanges();
+            }
         }
 
-        public void DeleteEntry(TimeEntry entry)
+        public List<TimeEntry> GetTimeEntries()
         {
-            entries.Remove(entry);
+            return entries;
+        }
+
+        public void DeleteEntry(int id)
+        {
+            entries.RemoveAt(id);
         }
 
         public override void UpdateInput(ConsoleKeyInfo input)
@@ -143,20 +160,32 @@ namespace rzeczuchyTrack.UI
         {
             int entryPosY = i - topVisibleEntry;
             TimeEntry entry = entries[entries.Count - 1 - i];
-            string listEntryData = "#" + entry.Id + " tracked " + entry.Time.ToString("h:mm:ss") + " on: " + entry.Label + " at: " + entry.TrackedOn;
+            DateTime time = new DateTime(1, 1, 1, entry.Hours, entry.Minutes, entry.Seconds);
+            string listEntryData = "#" + entry.Id + " tracked " + entry.Hours + ":" + time.ToString("mm:ss") +
+                " on: " + entry.Label + " at: " + entry.TrackedOn;
             if (i == CursorPosition)
             {
-                Utility.DrawString(listEntryData, new Point(Position.X + 1, entryPosY + Position.Y + 1), ConsoleColor.Blue, ConsoleColor.White);
+                Utility.DrawString(listEntryData, new Point(Position.X + 1, entryPosY + Position.Y + 1),
+                    ConsoleColor.Blue, ConsoleColor.White);
             }
             else
             {
-                Utility.DrawString(listEntryData, new Point(Position.X + 1, entryPosY + Position.Y + 1), window.BackgroundColor, window.ForegroundColor);
+                Utility.DrawString(listEntryData, new Point(Position.X + 1, entryPosY + Position.Y + 1),
+                    window.BackgroundColor, window.ForegroundColor);
             }
         }
 
         private TimeEntry GetHovered()
         {
             return entries[entries.Count - 1 - CursorPosition];
+        }
+
+        private List<TimeEntry> ReadEntriesFromDb()
+        {
+            using (var ctx = new EntriesDbContext())
+            {
+                return ctx.TimeEntries.ToList();
+            }
         }
     }
 }

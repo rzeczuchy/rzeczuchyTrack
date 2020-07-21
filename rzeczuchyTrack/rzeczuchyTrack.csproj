@@ -54,11 +54,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.cs" />
-    <Compile Include="Data\DataReaderWriter.cs" />
     <Compile Include="Data\EntriesDbContext.cs" />
     <Compile Include="Migrations\202007211507262_CreateTimeEntry.cs" />
-    <Compile Include="Migrations\202007211507262_CreateTimeEntry.designer.cs">
-      <DependentUpon>202007211507262_CreateTimeEntry.cs</DependentUpon>
+    <Compile Include="Migrations\202007211945208_AddingConstraints.cs" />
+    <Compile Include="Migrations\202007211945208_AddingConstraints.designer.cs">
+      <DependentUpon>202007211945208_AddingConstraints.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202007212012542_ModifyingTimeData.cs" />
+    <Compile Include="Migrations\202007212012542_ModifyingTimeData.designer.cs">
+      <DependentUpon>202007212012542_ModifyingTimeData.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Program.cs" />
@@ -75,12 +79,17 @@
     <Compile Include="Views\View.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202007211507262_CreateTimeEntry.resx">
-      <DependentUpon>202007211507262_CreateTimeEntry.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202007211945208_AddingConstraints.resx">
+      <DependentUpon>202007211945208_AddingConstraints.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202007212012542_ModifyingTimeData.resx">
+      <DependentUpon>202007212012542_ModifyingTimeData.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
