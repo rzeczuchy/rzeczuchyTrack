@@ -88,7 +88,7 @@ namespace rzeczuchyTrack.UI
                     ui.OpenTimer(this);
                     break;
                 case ConsoleKey.Delete:
-                    GetHoveredTimeEntry();
+                    DeleteEntry(GetHoveredTimeEntry());
                     break;
                 case ConsoleKey.Home:
                     ScrollToTop();
