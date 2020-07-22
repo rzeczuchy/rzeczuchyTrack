@@ -37,7 +37,7 @@ namespace rzeczuchyTrack.UI
             get => cursorPosition;
             set
             {
-                cursorPosition = Utility.Clamp(value, 0, entries.Count - 1);
+                cursorPosition = Utility.Clamp(value, 0, GetListDisplayItems().Count - 1);
             }
         }
 
@@ -88,7 +88,7 @@ namespace rzeczuchyTrack.UI
                     ui.OpenTimer(this);
                     break;
                 case ConsoleKey.Delete:
-                    DeleteEntry(GetHovered());
+                    GetHoveredTimeEntry();
                     break;
                 case ConsoleKey.Home:
                     ScrollToTop();
@@ -131,9 +131,9 @@ namespace rzeczuchyTrack.UI
         {
             if (IsScrollable())
             {
-                topVisibleY = entries.Count - MaxVisibleY;
+                topVisibleY = GetListDisplayItems().Count - MaxVisibleY;
             }
-            CursorPosition = entries.Count - 1;
+            CursorPosition = GetListDisplayItems().Count - 1;
         }
 
         public void ScrollToTop()
@@ -145,59 +145,77 @@ namespace rzeczuchyTrack.UI
         public override void Draw()
         {
             window.Draw();
-            int displayed = topVisibleY + MaxVisibleY;
 
-            var stringsToDraw = ToDraw(displayed);
-
-            displayed = stringsToDraw.Count < displayed ? stringsToDraw.Count : displayed;
-
+            int displayed = (topVisibleY + MaxVisibleY < GetListDisplayItems().Count()) ? topVisibleY + MaxVisibleY : GetListDisplayItems().Count();
             for (int i = topVisibleY; i < displayed; i++)
             {
-                int entryPosY = i - topVisibleY;
-
+                Point position = new Point(Position.X + 1, Position.Y + 1 + i - topVisibleY);
                 if (i == CursorPosition)
                 {
-                    Utility.DrawString(stringsToDraw[i], new Point(Position.X + 1, entryPosY + Position.Y + 1),
+                    Utility.DrawString(GetListDisplayItemString(i), position,
                         ConsoleColor.Blue, ConsoleColor.White);
                 }
                 else
                 {
-                    Utility.DrawString(stringsToDraw[i], new Point(Position.X + 1, entryPosY + Position.Y + 1),
+                    Utility.DrawString(GetListDisplayItemString(i), position,
                         window.BackgroundColor, window.ForegroundColor);
                 }
-                
             }
         }
 
-        public List<string> ToDraw(int limit)
+        public Dictionary<int, object> GetListDisplayItems()
         {
-            var strings = new List<string>();
-            int row = 0;
+            var items = new Dictionary<int, object>();
+            int itemId = 0;
 
             List<DateTime> distinctDays = entries.Select(e => e.TrackedOn.Date).Distinct().ToList();
             distinctDays.Reverse();
-            int day = 0;
 
-            while (row < limit && day < distinctDays.Count)
+            for (int d = 0; d < distinctDays.Count; d++)
             {
-                DateTime currentDay = distinctDays[day];
-                strings.Add(GetDayString(currentDay));
-                row++;
+                DateTime currentDay = distinctDays[d];
+                items.Add(itemId, currentDay);
+                itemId++;
 
                 List<TimeEntry> dayEntries = entries.Where(e => e.TrackedOn.Date == currentDay).ToList();
+                dayEntries.Reverse();
 
                 for (int e = 0; e < dayEntries.Count; e++)
                 {
-                    if (row >= limit)
-                    {
-                        break;
-                    }
-                    strings.Add(GetEntryString(dayEntries[e]));
-                    row++;
+                    TimeEntry entry = dayEntries[e];
+                    items.Add(itemId, entry);
+                    itemId++;
                 }
-                day++;
+                items.Add(itemId, null);
+                itemId++;
             }
-            return strings;
+
+            return items;
+        }
+
+        private object GetListDisplayItem(int id)
+        {
+            if (GetListDisplayItems().TryGetValue(id, out object item))
+            {
+                return item;
+            };
+            return null;
+        }
+
+        private string GetListDisplayItemString(int id)
+        {
+            if (GetListDisplayItems().TryGetValue(id, out object item))
+            {
+                if (item is DateTime day)
+                {
+                    return GetDayString(day);
+                }
+                else if (item is TimeEntry entry)
+                {
+                    return GetEntryString(entry);
+                }
+            };
+            return "----------------------";
         }
 
         private string GetDayString(DateTime day)
@@ -216,27 +234,27 @@ namespace rzeczuchyTrack.UI
         private string GetEntryString(TimeEntry entry)
         {
             DateTime time = new DateTime(1, 1, 1, entry.Hours, entry.Minutes, entry.Seconds);
-            return "#" + entry.Id + " tracked " + entry.Hours + ":" + time.ToString("mm:ss") +
-                " on: " + entry.Label + " at: " + entry.TrackedOn;
+            return "#" + entry.Id + " " + entry.Hours + ":" + time.ToString("mm:ss") +
+                " on: " + entry.Label + " at: " + entry.TrackedOn.ToShortTimeString();
         }
         
         private bool IsScrollable()
         {
-            return entries.Count() > MaxVisibleY;
+            return GetListDisplayItems().Count > MaxVisibleY;
         }
 
-        private TimeEntry GetHovered()
+        private TimeEntry GetHoveredTimeEntry()
         {
-            if (entries.Any())
+            if (GetListDisplayItem(GetHoveredId()) is TimeEntry entry)
             {
-                return entries[entries.Count - 1 - CursorPosition];
+                return entry;
             }
             return null;
         }
 
-        private int GetHoveredPosition()
+        private int GetHoveredId()
         {
-            return entries.Count - 1 - CursorPosition;
+            return topVisibleY + CursorPosition;
         }
 
         #region DataHandling
