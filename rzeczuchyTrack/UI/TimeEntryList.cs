@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Data.Entity;
 using rzeczuchyTrack.Data;
 using rzeczuchyTrack.Utilities;
 using rzeczuchyTrack.TimeEntries;
@@ -15,7 +16,7 @@ namespace rzeczuchyTrack.UI
         private readonly List<TimeEntry> entries;
         private readonly Window window;
         private int cursorPosition;
-        private int topVisibleEntry;
+        private int topVisibleY;
 
         public TimeEntryList(Point position, Point size, UIStateHandler ui)
         {
@@ -24,7 +25,7 @@ namespace rzeczuchyTrack.UI
             Size = size;
             entries = ReadEntriesFromDb();
             CursorPosition = 0;
-            topVisibleEntry = 0;
+            topVisibleY = 0;
             window = new Window(position, size);
         }
 
@@ -40,7 +41,7 @@ namespace rzeczuchyTrack.UI
             }
         }
 
-        public int MaxVisibleEntries
+        public int MaxVisibleY
         {
             get
             {
@@ -70,11 +71,12 @@ namespace rzeczuchyTrack.UI
             if (entry != null)
             {
                 entries.Remove(entry);
-            }
-            
-            if (CursorPosition >= entries.Count && entries.Any())
-            {
-                MoveCursorUp();
+                RemoveEntryFromDb(entry);
+
+                if (CursorPosition >= entries.Count && entries.Any())
+                {
+                    MoveCursorUp();
+                }
             }
         }
 
@@ -109,9 +111,9 @@ namespace rzeczuchyTrack.UI
         {
             CursorPosition--;
 
-            if (CursorPosition < topVisibleEntry)
+            if (CursorPosition < topVisibleY)
             {
-            topVisibleEntry--;
+            topVisibleY--;
             }
         }
 
@@ -119,9 +121,9 @@ namespace rzeczuchyTrack.UI
         {
             CursorPosition++;
 
-            if (CursorPosition >= topVisibleEntry + MaxVisibleEntries)
+            if (CursorPosition >= topVisibleY + MaxVisibleY)
             {
-                topVisibleEntry++;
+                topVisibleY++;
             }
         }
 
@@ -129,7 +131,7 @@ namespace rzeczuchyTrack.UI
         {
             if (IsScrollable())
             {
-                topVisibleEntry = entries.Count - MaxVisibleEntries;
+                topVisibleY = entries.Count - MaxVisibleY;
             }
             CursorPosition = entries.Count - 1;
         }
@@ -137,41 +139,90 @@ namespace rzeczuchyTrack.UI
         public void ScrollToTop()
         {
             CursorPosition = 0;
-            topVisibleEntry = 0;
+            topVisibleY = 0;
         }
 
         public override void Draw()
         {
             window.Draw();
-            int displayed = (topVisibleEntry + MaxVisibleEntries < entries.Count()) ? topVisibleEntry + MaxVisibleEntries : entries.Count();
-            for (int i = topVisibleEntry; i < displayed; i++)
+            int displayed = topVisibleY + MaxVisibleY;
+
+            var stringsToDraw = ToDraw(displayed);
+
+            displayed = stringsToDraw.Count < displayed ? stringsToDraw.Count : displayed;
+
+            for (int i = topVisibleY; i < displayed; i++)
             {
-                DrawEntry(i);
+                int entryPosY = i - topVisibleY;
+
+                if (i == CursorPosition)
+                {
+                    Utility.DrawString(stringsToDraw[i], new Point(Position.X + 1, entryPosY + Position.Y + 1),
+                        ConsoleColor.Blue, ConsoleColor.White);
+                }
+                else
+                {
+                    Utility.DrawString(stringsToDraw[i], new Point(Position.X + 1, entryPosY + Position.Y + 1),
+                        window.BackgroundColor, window.ForegroundColor);
+                }
+                
             }
         }
 
-        private void DrawEntry(int i)
+        public List<string> ToDraw(int limit)
         {
-            int entryPosY = i - topVisibleEntry;
-            TimeEntry entry = entries[entries.Count - 1 - i];
+            var strings = new List<string>();
+            int row = 0;
+
+            List<DateTime> distinctDays = entries.Select(e => e.TrackedOn.Date).Distinct().ToList();
+            distinctDays.Reverse();
+            int day = 0;
+
+            while (row < limit && day < distinctDays.Count)
+            {
+                DateTime currentDay = distinctDays[day];
+                strings.Add(GetDayString(currentDay));
+                row++;
+
+                List<TimeEntry> dayEntries = entries.Where(e => e.TrackedOn.Date == currentDay).ToList();
+
+                for (int e = 0; e < dayEntries.Count; e++)
+                {
+                    if (row >= limit)
+                    {
+                        break;
+                    }
+                    strings.Add(GetEntryString(dayEntries[e]));
+                    row++;
+                }
+                day++;
+            }
+            return strings;
+        }
+
+        private string GetDayString(DateTime day)
+        {
+            if (day == DateTime.Today)
+            {
+                return "Today";
+            }
+            if (day == DateTime.Today.AddDays(-1))
+            {
+                return "Yesterday";
+            }
+            return day.ToShortDateString();
+        }
+
+        private string GetEntryString(TimeEntry entry)
+        {
             DateTime time = new DateTime(1, 1, 1, entry.Hours, entry.Minutes, entry.Seconds);
-            string listEntryData = "#" + entry.Id + " tracked " + entry.Hours + ":" + time.ToString("mm:ss") +
+            return "#" + entry.Id + " tracked " + entry.Hours + ":" + time.ToString("mm:ss") +
                 " on: " + entry.Label + " at: " + entry.TrackedOn;
-            if (i == CursorPosition)
-            {
-                Utility.DrawString(listEntryData, new Point(Position.X + 1, entryPosY + Position.Y + 1),
-                    ConsoleColor.Blue, ConsoleColor.White);
-            }
-            else
-            {
-                Utility.DrawString(listEntryData, new Point(Position.X + 1, entryPosY + Position.Y + 1),
-                    window.BackgroundColor, window.ForegroundColor);
-            }
         }
         
         private bool IsScrollable()
         {
-            return entries.Count() > MaxVisibleEntries;
+            return entries.Count() > MaxVisibleY;
         }
 
         private TimeEntry GetHovered()
@@ -194,6 +245,15 @@ namespace rzeczuchyTrack.UI
             using (var ctx = new EntriesDbContext())
             {
                 ctx.TimeEntries.Add(entry);
+                ctx.SaveChanges();
+            }
+        }
+
+        private void RemoveEntryFromDb(TimeEntry item)
+        {
+            using (var ctx = new EntriesDbContext())
+            {
+                ctx.Entry(item).State = EntityState.Deleted;
                 ctx.SaveChanges();
             }
         }
