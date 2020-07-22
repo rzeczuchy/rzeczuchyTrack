@@ -40,7 +40,7 @@ namespace rzeczuchyTrack.UI
             }
         }
 
-        public int maxVisibleEntries
+        public int MaxVisibleEntries
         {
             get
             {
@@ -62,21 +62,20 @@ namespace rzeczuchyTrack.UI
             };
             entries.Add(entry);
 
-            using (var ctx = new EntriesDbContext())
+            AddEntryToDb(entry);
+        }
+
+        public void DeleteEntry(TimeEntry entry)
+        {
+            if (entry != null)
             {
-                ctx.TimeEntries.Add(entry);
-                ctx.SaveChanges();
+                entries.Remove(entry);
             }
-        }
-
-        public List<TimeEntry> GetTimeEntries()
-        {
-            return entries;
-        }
-
-        public void DeleteEntry(int id)
-        {
-            entries.RemoveAt(id);
+            
+            if (CursorPosition >= entries.Count && entries.Any())
+            {
+                MoveCursorUp();
+            }
         }
 
         public override void UpdateInput(ConsoleKeyInfo input)
@@ -87,7 +86,7 @@ namespace rzeczuchyTrack.UI
                     ui.OpenTimer(this);
                     break;
                 case ConsoleKey.Delete:
-                    //delete time entry
+                    DeleteEntry(GetHovered());
                     break;
                 case ConsoleKey.Home:
                     ScrollToTop();
@@ -106,16 +105,6 @@ namespace rzeczuchyTrack.UI
             }
         }
 
-        public override void Draw()
-        {
-            window.Draw();
-            int displayed = (topVisibleEntry + maxVisibleEntries < entries.Count()) ? topVisibleEntry + maxVisibleEntries : entries.Count();
-            for (int i = topVisibleEntry; i < displayed; i++)
-            {
-                DrawEntry(i);
-            }
-        }
-
         public void MoveCursorUp()
         {
             CursorPosition--;
@@ -130,7 +119,7 @@ namespace rzeczuchyTrack.UI
         {
             CursorPosition++;
 
-            if (CursorPosition >= topVisibleEntry + maxVisibleEntries)
+            if (CursorPosition >= topVisibleEntry + MaxVisibleEntries)
             {
                 topVisibleEntry++;
             }
@@ -140,7 +129,7 @@ namespace rzeczuchyTrack.UI
         {
             if (IsScrollable())
             {
-                topVisibleEntry = entries.Count - maxVisibleEntries;
+                topVisibleEntry = entries.Count - MaxVisibleEntries;
             }
             CursorPosition = entries.Count - 1;
         }
@@ -151,9 +140,14 @@ namespace rzeczuchyTrack.UI
             topVisibleEntry = 0;
         }
 
-        private bool IsScrollable()
+        public override void Draw()
         {
-            return entries.Count() > maxVisibleEntries;
+            window.Draw();
+            int displayed = (topVisibleEntry + MaxVisibleEntries < entries.Count()) ? topVisibleEntry + MaxVisibleEntries : entries.Count();
+            for (int i = topVisibleEntry; i < displayed; i++)
+            {
+                DrawEntry(i);
+            }
         }
 
         private void DrawEntry(int i)
@@ -174,10 +168,34 @@ namespace rzeczuchyTrack.UI
                     window.BackgroundColor, window.ForegroundColor);
             }
         }
+        
+        private bool IsScrollable()
+        {
+            return entries.Count() > MaxVisibleEntries;
+        }
 
         private TimeEntry GetHovered()
         {
-            return entries[entries.Count - 1 - CursorPosition];
+            if (entries.Any())
+            {
+                return entries[entries.Count - 1 - CursorPosition];
+            }
+            return null;
+        }
+
+        private int GetHoveredPosition()
+        {
+            return entries.Count - 1 - CursorPosition;
+        }
+
+        #region DataHandling
+        private static void AddEntryToDb(TimeEntry entry)
+        {
+            using (var ctx = new EntriesDbContext())
+            {
+                ctx.TimeEntries.Add(entry);
+                ctx.SaveChanges();
+            }
         }
 
         private List<TimeEntry> ReadEntriesFromDb()
@@ -187,5 +205,6 @@ namespace rzeczuchyTrack.UI
                 return ctx.TimeEntries.ToList();
             }
         }
+        #endregion
     }
 }
