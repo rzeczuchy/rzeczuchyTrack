@@ -50,6 +50,9 @@ namespace rzeczuchyTrack.UI
         {
             switch (input.Key)
             {
+                case ConsoleKey.Escape:
+                    Exit();
+                    break;
                 case ConsoleKey.Enter:
                     ToggleTimer();
                     break;
@@ -60,37 +63,8 @@ namespace rzeczuchyTrack.UI
                     AddTimeEntry();
                     break;
                 default:
-                    if (EnteredLabel.Length < MaxLength)
-                    {
-                        char c = input.KeyChar;
-                        if (char.IsLetter(c) || char.IsNumber(c) || char.IsSymbol(c) || char.IsPunctuation(c) || c == ' ')
-                        {
-                            EnteredLabel += c;
-                        }
-                    }
+                    ProcessKeys(input);
                     break;
-            }
-        }
-
-        public void ToggleTimer()
-        {
-            if (!Timer.IsRunning)
-            {
-                Timer.Start();
-                window.BackgroundColor = ConsoleColor.DarkRed;
-            }
-            else
-            {
-                Timer.Stop();
-                window.BackgroundColor = ConsoleColor.DarkYellow;
-            }
-        }
-
-        public void Backspace()
-        {
-            if (EnteredLabel.Length > 0)
-            {
-                EnteredLabel = EnteredLabel.Remove(EnteredLabel.Length - 1);
             }
         }
 
@@ -110,13 +84,55 @@ namespace rzeczuchyTrack.UI
             Timer.Elapsed.Hours, Timer.Elapsed.Minutes, Timer.Elapsed.Seconds);
             Utility.DrawString(timerDisplay, new Point(Position.X + Size.X - 10, Position.Y + 1), window.BackgroundColor, window.ForegroundColor);
         }
+        
+        private void Exit()
+        {
+            if (!Timer.IsRunning)
+            {
+                ui.CloseState(this);
+            }
+        }
+
+        private void ToggleTimer()
+        {
+            if (!Timer.IsRunning)
+            {
+                Timer.Start();
+                window.BackgroundColor = ConsoleColor.DarkRed;
+            }
+            else
+            {
+                Timer.Stop();
+                window.BackgroundColor = ConsoleColor.DarkYellow;
+            }
+        }
+
+        private void Backspace()
+        {
+            if (EnteredLabel.Length > 0)
+            {
+                EnteredLabel = EnteredLabel.Remove(EnteredLabel.Length - 1);
+            }
+        }
 
         private void AddTimeEntry()
         {
-            if (!Timer.IsRunning && Timer.Elapsed.Seconds > 1)
+            if (!Timer.IsRunning && Timer.Elapsed.Seconds > 0)
             {
                 timeEntryList.AddEntry(EnteredLabel, Timer.Elapsed.Hours, Timer.Elapsed.Minutes, Timer.Elapsed.Seconds);
                 ui.CloseState(this);
+            }
+        }
+
+        private void ProcessKeys(ConsoleKeyInfo input)
+        {
+            if (EnteredLabel.Length < MaxLength)
+            {
+                char c = input.KeyChar;
+                if (char.IsLetter(c) || char.IsNumber(c) || char.IsSymbol(c) || char.IsPunctuation(c) || c == ' ')
+                {
+                    EnteredLabel += c;
+                }
             }
         }
     }
